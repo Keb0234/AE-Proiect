@@ -1,1 +1,1 @@
-Prezentare proiect: https://lungu-mihai-adrian.gitbook.io/afaceri-electronice-2024-2025/
+Prezentare proiect pe yt https://www.youtube.com/watch?v=3w4asO1zH4Q
