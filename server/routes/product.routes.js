@@ -11,7 +11,21 @@ router.get('/', async (req, res) => {
     } catch (error) {
         res.status(500).json({success: false, message: 'Error retrieving products', data: error.message});
     }
-})
+});
+
+router.get('/category/:category', async (req, res) => {
+    try {
+        const { category } = req.params;
+
+        const products = await Product.findAll({
+            where: { category }
+        });
+
+        res.status(200).json({success: true,message: `Products from category ${category}`,data: products});
+    } catch (error) {
+        res.status(500).json({success: false,message: 'Error retrieving products by category',data: error.message});
+    }
+});
 
 router.get('/:id', async (req, res) => {
     try {
@@ -31,7 +45,7 @@ router.get('/:id', async (req, res) => {
     } catch (error) {
         res.status(500).json({success: false, message: 'Error retrieving product', data: error.message});
     }
-})
+});
 
 router.post('/', verifyToken, async (req, res) => {
     try {
@@ -43,7 +57,7 @@ router.post('/', verifyToken, async (req, res) => {
     } catch (error) {
         res.status(500).json({success: false, message: 'Error creating product', data: error.message});
     }
-})
+});
 
 router.put('/:id', verifyToken, async (req, res) => {
     try {
@@ -67,7 +81,7 @@ router.put('/:id', verifyToken, async (req, res) => {
     } catch (error) {
         res.status(500).json({success: false, message: 'Error updating product', data: error.message});
     }
-})
+});
 
 router.delete('/:id', verifyToken, async (req, res) => {
     try {
@@ -89,6 +103,6 @@ router.delete('/:id', verifyToken, async (req, res) => {
     } catch (error) {
         res.status(500).json({success: false, message: 'Error deleting product', data: error.message});
     }
-})
+});
 
 module.exports = router;

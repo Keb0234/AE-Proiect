@@ -3,11 +3,11 @@ import axiosAuth from "../axios/axiosAuth";
 
 export const fetchProducts = async () => {
   try {
-    const response = await axiosNoAuth.get('products');
-    return response.data;
+    const response = await axiosNoAuth.get('/products');
+    return response; // <-- ADD THIS LINE
   } catch (error) {
-    console.error("Error fetching products:", error);
-    return error.response?.data;
+    console.error('Error fetching products:', error);
+    throw error; // It's also good to 'throw' the error here
   }
 };
 
@@ -50,3 +50,15 @@ export const deleteProduct = async (id) => {
     return error.response?.data;
   }
 };
+
+export const getProductsByCategory = async (category) => {
+  try {
+    const response = await axiosNoAuth.get(`products/category/${category}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching products by category:", error);
+    return error.response?.data ?? { success: false, data: [] };
+  }
+};
+
+

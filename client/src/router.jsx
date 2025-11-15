@@ -1,11 +1,12 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import HomePage from "./pages/HomePage";
-import ProductsPage from "./pages/ProductsPage";
+import CartPage from "./pages/CartPage";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import CreateProductPage from "./pages/CreateProductPage";
 import EditProductPage from "./pages/EditProductPage";
+import CategoryPage from "./pages/CategoryPage";
 import { ProtectedLayout, AuthLayout } from "./components/ProtectedRoute";
 import { AdminRoute } from "./components/AdminRoute";
 
@@ -20,14 +21,21 @@ export const router = createBrowserRouter([
       },
       {
         path: "products",
-        element: <ProductsPage />,
+        element: <CategoryPage />,
       },
-      // Protected routes - require authentication
+      {
+        path: "category/:category",
+        element: <CategoryPage />,
+      },
       {
         element: <ProtectedLayout />,
-        children: [],
+        children: [
+          {
+            path: "cart",
+            element: <CartPage />,
+          },
+        ],
       },
-      // Admin routes - require authentication AND admin role
       {
         element: <AdminRoute />,
         children: [
@@ -41,7 +49,6 @@ export const router = createBrowserRouter([
           },
         ],
       },
-      // Auth routes - require the user to NOT be authenticated
       {
         element: <AuthLayout />,
         children: [

@@ -1,7 +1,7 @@
 const { User } = require('../database/models');
 const express = require('express');
 const bcrypt = require('bcrypt');
-const {verifyToken} = require('../utils/token.js');
+const { verifyToken } = require('../utils/token.js');
 
 const router = express.Router();
 
@@ -13,9 +13,9 @@ router.get('/', verifyToken, async (req, res) => {
             }
         });
 
-        res.status(200).json({success: true, message: 'Users retrieved successfully', data: users});
+        res.status(200).json({ success: true, message: 'Users retrieved successfully', data: users });
     } catch (error) {
-        res.status(500).json({success: false, message: 'Error retrieving users', data: error.message});
+        res.status(500).json({ success: false, message: 'Error retrieving users', data: error.message });
     }
 })
 
@@ -24,7 +24,7 @@ router.get('/:id', verifyToken, async (req, res) => {
         const id = req.params.id;
 
         if (isNaN(id)) {
-            return res.status(400).json({success: false, message: 'User id is not valid', data: {}})
+            return res.status(400).json({ success: false, message: 'User id is not valid', data: {} })
         }
 
         const user = await User.findByPk(id, {
@@ -34,40 +34,48 @@ router.get('/:id', verifyToken, async (req, res) => {
         });
 
         if (!user) {
-            return res.status(404).json({success: false, message: 'User not found', data: {}})
+            return res.status(404).json({ success: false, message: 'User not found', data: {} })
         }
 
-        res.status(200).json({success: true, message: 'User was found', data: user})
+        res.status(200).json({ success: true, message: 'User was found', data: user })
     } catch (error) {
-        res.status(500).json({success: false, message: 'Error retrieving user', data: error.message});
+        res.status(500).json({ success: false, message: 'Error retrieving user', data: error.message });
     }
 })
 
 router.post('/', async (req, res) => {
     try {
         const existingUser = await User.findOne({
-            where: {
-                email: req.body.email
-            }
+            where: { email: req.body.email }
         })
 
-        if(existingUser) {
-            return res.status(400).json({success: false, message: 'User already exists', data: {}});
+        if (existingUser) {
+            return res.status(400).json({ success: false, message: 'User already exists', data: {} });
         }
+
+        // --- START DEBUGGING ---
+        console.log("\n--- REGISTRATION ATTEMPT ---");
+        console.log(`Password from form: ${req.body.password}`);
 
         const salt = bcrypt.genSaltSync(10);
         const hashedPassword = bcrypt.hashSync(req.body.password, salt);
 
+        console.log(`Hashed password being saved: ${hashedPassword}`);
+        console.log("--- END REGISTRATION ATTEMPT ---\n");
+        // --- END DEBUGGING ---
+
+        const { email, name } = req.body;
+
         const user = await User.create({
-            ...req.body,
+            email: email,
+            name: name,
             password: hashedPassword,
         })
 
         delete user.dataValues.password;
-
-        res.status(201).json({success: true, message: 'User created successfully', data: user});
+        res.status(201).json({ success: true, message: 'User created successfully', data: user });
     } catch (error) {
-        res.status(500).json({success: false, message: 'Error creating user', data: error.message});
+        res.status(500).json({ success: false, message: 'Error creating user', data: error.message });
     }
 })
 
@@ -76,13 +84,13 @@ router.put('/:id', verifyToken, async (req, res) => {
         const id = req.params.id;
 
         if (isNaN(id)) {
-            return res.status(400).json({success: false, message: 'User id is not valid', data: {}})
+            return res.status(400).json({ success: false, message: 'User id is not valid', data: {} })
         }
 
         const user = await User.findByPk(id);
 
         if (!user) {
-            return res.status(404).json({success: false, message: 'User not found', data: {}})
+            return res.status(404).json({ success: false, message: 'User not found', data: {} })
         }
 
         const updatedUser = await user.update({
@@ -91,9 +99,9 @@ router.put('/:id', verifyToken, async (req, res) => {
 
         delete updatedUser.dataValues.password;
 
-        res.status(200).json({success: true, message: 'User updated successfully', data: updatedUser});
+        res.status(200).json({ success: true, message: 'User updated successfully', data: updatedUser });
     } catch (error) {
-        res.status(500).json({success: false, message: 'Error updating user', data: error.message});
+        res.status(500).json({ success: false, message: 'Error updating user', data: error.message });
     }
 })
 
@@ -102,20 +110,20 @@ router.delete('/:id', verifyToken, async (req, res) => {
         const id = req.params.id;
 
         if (isNaN(id)) {
-            return res.status(400).json({success: false, message: 'User id is not valid', data: {}})
+            return res.status(400).json({ success: false, message: 'User id is not valid', data: {} })
         }
 
         const user = await User.findByPk(id);
 
         if (!user) {
-            return res.status(404).json({success: false, message: 'User not found', data: {}})
+            return res.status(404).json({ success: false, message: 'User not found', data: {} })
         }
 
         await user.destroy();
 
-        res.status(200).json({success: true, message: 'User successfully deleted', data: {}});
+        res.status(200).json({ success: true, message: 'User successfully deleted', data: {} });
     } catch (error) {
-        res.status(500).json({success: false, message: 'Error deleting user', data: error.message});
+        res.status(500).json({ success: false, message: 'Error deleting user', data: error.message });
     }
 })
 

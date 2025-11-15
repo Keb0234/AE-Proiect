@@ -18,11 +18,12 @@ export default function ProductsPage() {
     const getProducts = async () => {
       try {
         setLoading(true);
-        const {data} = await fetchProducts();
-        if (data && Array.isArray(data)) {
-          setProducts(data);
+        const { data } = await fetchProducts();
+        if (data && data.success && Array.isArray(data.data)) {
+          setProducts(data.data); // <-- Set the array from data.data
         } else {
-          setError('Failed to load products');
+          // Use the error message from the server if it exists
+          setError(data?.message || 'Failed to load products');
         }
       } catch (err) {
         setError(err.message || 'An error occurred while fetching products');
@@ -81,7 +82,7 @@ export default function ProductsPage() {
 
   if (!products || products.length === 0) {
     return (
-      <div className="bg-white h-screen flex items-center justify-center">
+      <div className="bg-black h-screen flex items-center justify-center">
         <div className="text-center">
           <p className="text-gray-500 font-semibold">No products available</p>
           {isAdmin && (
@@ -104,7 +105,7 @@ export default function ProductsPage() {
     <div className="bg-white h-screen overflow-y-auto">
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
         <div className="flex justify-between items-center mb-8">
-          <h2 className="text-2xl font-bold tracking-tight text-gray-900">Products</h2>
+          <h2 className="text-2xl font-bold tracking-tight text-gray-900"> Menu</h2>
           {isAdmin && (
             <button
               onClick={handleCreateClick}
